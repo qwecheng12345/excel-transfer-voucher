@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -20,14 +21,16 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import com.rex.poi.excel.model.ExcelModel;
+import com.rex.poi.excel.model.MonthCode;
 import com.rex.poi.excel.util.FileUtil;
+import com.rex.poi.excel.util.RandomUtil;
 import com.rex.poi.excel.util.WorkbookUtil;
 
 public class SimpleExcelServiceImpl implements ExcelService {
 	
 	private static Logger logger = Logger.getLogger(SimpleExcelServiceImpl.class);
 	
-	private static final String[] FILTER_COLUMN_E = {"ÆÚÄ©½á×ª"};
+	private static final String[] FILTER_COLUMN_E = {"æœŸæœ«ç»“è½¬"};
 	private static final Integer DEFAULT_MAX_NUM = 80;
 	
 	private static final Integer BEGIN_ROW = 8;
@@ -78,7 +81,7 @@ public class SimpleExcelServiceImpl implements ExcelService {
 		CellStyle cellStyle = workbook.createCellStyle();
 		Font font = workbook.createFont();
 		font.setFontHeightInPoints((short) 10);
-		font.setFontName("ËÎÌå");
+		font.setFontName("å®‹ä½“");
 		cellStyle.setFont(font);
 		cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
 		cellStyle.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
@@ -112,7 +115,7 @@ public class SimpleExcelServiceImpl implements ExcelService {
 		cellStyle3.setDataFormat(workbook.createDataFormat().getFormat("yyyy/m/d"));
 		
 		if (limited) {
-			datas = limitedDatas(datas);
+			datas = getLimitedDatas(datas);
 		}
 		
 		if (datas != null && !datas.isEmpty()) {
@@ -157,10 +160,15 @@ public class SimpleExcelServiceImpl implements ExcelService {
 		return workbook;
 	}
 
-	private List<ExcelModel> limitedDatas(List<ExcelModel> datas) {
+	private List<ExcelModel> getLimitedDatas(List<ExcelModel> datas) {
 		List<ExcelModel> result = new ArrayList<ExcelModel>();
 		List<Double> amountRange = initAmountRange(datas);
 		if (datas != null && !datas.isEmpty()) {
+			Map<MonthCode, List<Double>> dataMap = RandomUtil.getDataDescOrderPerMonth(datas);
+			// TODO check if empty
+			int monthNum = dataMap.keySet().size();
+			int numPerMonth = DEFAULT_MAX_NUM / monthNum + 1;
+			
 			int index = BEGIN_ROW;
 			boolean cheked = false;
 			Set<String> monthSet = new HashSet<String>();
@@ -172,25 +180,11 @@ public class SimpleExcelServiceImpl implements ExcelService {
 						break;
 					}
 					
-//					if (!checkIfValidData(data)) {
-//						continue;
-//					}
-					
-					Double amount = 0.0;
-					if (data.getColumnF() == null || "".equals(data.getColumnF())) {
-						amount = Math.abs(Double.valueOf(data.getColumnG()));
-					} else {
-						amount = Math.abs(Double.valueOf(data.getColumnF()));
-					}
-					
-					if (!amountRange.contains(amount)) {
-						continue;
-					} 
-					
-					if (!cheked && monthSet.contains(data.getColumnA())) {
+					int month = Integer.valueOf(data.getColumnA());
+					if (!checkIfValidData(dataMap.get(month), data, numPerMonth)) {
 						continue;
 					}
-					monthSet.add(data.getColumnA());
+					
 					if (!result.contains(data)) {
 						index++;
 						result.add(data);
@@ -203,6 +197,37 @@ public class SimpleExcelServiceImpl implements ExcelService {
 		
 		Collections.sort(result, new DateComparator());
 		return result;
+	}
+
+	private boolean checkIfValidData(List<Double> list, ExcelModel data,
+			int numPerMonth) {
+		if (data.getColumnA() == null || "".equals(data.getColumnA())
+				|| data.getColumnB() == null || "".equals(data.getColumnB())
+				|| data.getColumnE() == null || "".equals(data.getColumnE())) {
+			return false;
+		}
+		
+		for (String filter : FILTER_COLUMN_E) {
+			if (data.getColumnE().contains(filter)) {
+				return false;
+			}
+		}
+		
+		if ((data.getColumnF() == null || "".equals(data.getColumnF()))
+				&& (data.getColumnG() == null || "".equals(data.getColumnG()))) {
+			return false;
+		}
+		
+		Double amount = 0.0;
+		if (data.getColumnF() == null || "".equals(data.getColumnF())) {
+			amount = Math.abs(Double.valueOf(data.getColumnG()));
+		} else {
+			amount = Math.abs(Double.valueOf(data.getColumnF()));
+		}
+		if (!list.subList(0, numPerMonth).contains(amount)) {
+			return false;
+		}
+		return true;
 	}
 
 	private List<Double> initAmountRange(List<ExcelModel> datas) {
@@ -257,7 +282,7 @@ public class SimpleExcelServiceImpl implements ExcelService {
 		try {
 			File file = new File(outputPath + fileName);
 			if (file.canWrite()) {
-				out = new FileOutputStream(outputPath + "¼ÇÕËÆ¾Ö¤-" + fileName);  
+				out = new FileOutputStream(outputPath + "ï¿½ï¿½ï¿½ï¿½Æ¾Ö¤-" + fileName);  
 				workbook.write(out);  
 			}
 		} catch (Exception e) {

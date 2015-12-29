@@ -1,6 +1,6 @@
 package com.rex.poi.excel.model;
 
-public class BaseModel {
+public abstract class BaseModel {
 	private String columnA;		// Date(日期, yyyy-MM-dd)
 	private String columnB;		// Voucher(凭证号, A-B)
 	private String columnC;		// Summary(摘要)

@@ -1,6 +1,6 @@
 package com.rex.poi.excel.model;
 
-public class ExcelModel {
+public class ExcelModel extends BaseModel {
 	private String columnA;
 	private String columnB;
 	private String columnC;
