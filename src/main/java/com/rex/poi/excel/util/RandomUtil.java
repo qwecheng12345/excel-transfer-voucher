@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.rex.poi.excel.model.BaseModel;
+import com.rex.poi.excel.model.MonthCode;
+
 public class RandomUtil {
 	private static List<Double> janList;
 	private static List<Double> febList;
@@ -19,21 +22,7 @@ public class RandomUtil {
 	private static List<Double> novList;
 	private static List<Double> decList;
 	
-	private static final String JAN = "Jan";
-	private static final String FEB = "Feb";
-	private static final String MAR = "Mar";
-	private static final String APR = "Apr";
-	private static final String MAY = "MAY";
-	private static final String JUN = "Jun";
-	private static final String JUL = "Jul";
-	private static final String AUG = "Aug";
-	private static final String SEP = "Sep";
-	private static final String OCT = "Oct";
-	private static final String NOV = "Nov";
-	private static final String DEC = "Dec";
-	
-	
-	private static Map<String, List<Double>> monthMaps;
+	private static Map<MonthCode, List<Double>> monthMaps;
 	
 	public static void initList() {
 		janList = new ArrayList<Double>();
@@ -51,18 +40,28 @@ public class RandomUtil {
 	}
 	
 	public static void initMonthMap() {
-		monthMaps = new HashMap<String, List<Double>>();
-		monthMaps.put(JAN, janList);
-		monthMaps.put(FEB, febList);
-		monthMaps.put(MAR, marList);
-		monthMaps.put(APR, aprList);
-		monthMaps.put(MAY, mayList);
-		monthMaps.put(JUN, junList);
-		monthMaps.put(JUL, julList);
-		monthMaps.put(AUG, augList);
-		monthMaps.put(SEP, sepList);
-		monthMaps.put(OCT, octList);
-		monthMaps.put(NOV, novList);
-		monthMaps.put(DEC, decList);
+		monthMaps = new HashMap<MonthCode, List<Double>>();
+		monthMaps.put(MonthCode.JAN, janList);
+		monthMaps.put(MonthCode.FEB, febList);
+		monthMaps.put(MonthCode.MAR, marList);
+		monthMaps.put(MonthCode.APR, aprList);
+		monthMaps.put(MonthCode.MAY, mayList);
+		monthMaps.put(MonthCode.JUN, junList);
+		monthMaps.put(MonthCode.JUL, julList);
+		monthMaps.put(MonthCode.AUG, augList);
+		monthMaps.put(MonthCode.SEP, sepList);
+		monthMaps.put(MonthCode.OCT, octList);
+		monthMaps.put(MonthCode.NOV, novList);
+		monthMaps.put(MonthCode.DEC, decList);
+	}
+	
+	public static void getRandomLargeData(List<BaseModel> modelList) {
+		for (BaseModel model : modelList) {
+			
+		}
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(MonthCode.FEB.name().equals("FEB"));
 	}
 }

@@ -48,21 +48,21 @@ public class WorkbookUtil {
 	public static String getCellValue(Cell cell) {
 		if (null != cell) {     
             switch (cell.getCellType()) {     
-            case Cell.CELL_TYPE_NUMERIC: // Êý×Ö     
+            case Cell.CELL_TYPE_NUMERIC:
             	if (HSSFDateUtil.isCellDateFormatted(cell)) {
     				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
     				return sdf.format(HSSFDateUtil.getJavaDate(cell.getNumericCellValue())).toString();
     			}
             	return formatVal(cell.getNumericCellValue());     
-            case Cell.CELL_TYPE_STRING: // ×Ö·û´®     
+            case Cell.CELL_TYPE_STRING:
             	return formatVal(cell.getStringCellValue());     
-            case Cell.CELL_TYPE_BOOLEAN: // Boolean     
+            case Cell.CELL_TYPE_BOOLEAN:     
             	return formatVal(cell.getBooleanCellValue());     
-            case Cell.CELL_TYPE_FORMULA: // ¹«Ê½     
+            case Cell.CELL_TYPE_FORMULA:     
             	return cell.getCellFormula();
-            case Cell.CELL_TYPE_BLANK: // ¿ÕÖµ     
+            case Cell.CELL_TYPE_BLANK:     
             	return "";
-            case Cell.CELL_TYPE_ERROR: // ¹ÊÕÏ     
+            case Cell.CELL_TYPE_ERROR:     
                 break;     
             default:     
                 break;     

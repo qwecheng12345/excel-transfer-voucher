@@ -87,7 +87,7 @@ public class FileUtil {
 	public static boolean beginWithDigit(String strNum) {
 		Pattern pattern = Pattern.compile("^(\\d+)(.*)");
 		Matcher matcher = pattern.matcher(strNum);
-		if (matcher.matches()) {//Êý×Ö¿ªÍ·
+		if (matcher.matches()) {
 			return true;
 		}
 		return false;
