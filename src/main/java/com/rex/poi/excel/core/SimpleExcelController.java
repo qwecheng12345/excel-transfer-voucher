@@ -23,7 +23,7 @@ public class SimpleExcelController {
 		List<File> fileList = excelService.getFiles(inputPath);
 		for (File file : fileList) {
 			List<ExcelModel> datas = excelService.getDatas(file);
-			Workbook workbook = excelService.dealWithDatas(datas, file, simpleTemplatePath, false);
+			Workbook workbook = excelService.dealWithDatas(datas, file, simpleTemplatePath, true);
 			excelService.writeDataToExcel(workbook, file.getName(), outputPath);
 		}
 	}

@@ -76,7 +76,11 @@ public class RandomUtil {
 			} else if (MonthCode.NOV.ordinal() == month) {
 				novList.add(DoubleUtil.getValue(model.getColumnD()));
 			} else if (MonthCode.DEC.ordinal() == month) {
-				decList.add(DoubleUtil.getValue(model.getColumnD()));
+				try {
+					decList.add(DoubleUtil.getValue(model.getColumnD()));
+				} catch (Exception e) {
+					System.out.println(model.getColumnD());
+				}
 			}
 		}
 		

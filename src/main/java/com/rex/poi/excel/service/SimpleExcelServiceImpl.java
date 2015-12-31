@@ -162,7 +162,7 @@ public class SimpleExcelServiceImpl implements ExcelService {
 
 	private List<ExcelModel> getLimitedDatas(List<ExcelModel> datas) {
 		List<ExcelModel> result = new ArrayList<ExcelModel>();
-		List<Double> amountRange = initAmountRange(datas);
+//		List<Double> amountRange = initAmountRange(datas);
 		if (datas != null && !datas.isEmpty()) {
 			Map<MonthCode, List<Double>> dataMap = RandomUtil.getDataDescOrderPerMonth(datas);
 			// TODO check if empty
@@ -280,9 +280,9 @@ public class SimpleExcelServiceImpl implements ExcelService {
 	public void writeDataToExcel(Workbook workbook, String fileName, String outputPath) {
 		FileOutputStream out = null;
 		try {
-			File file = new File(outputPath + fileName);
+			File file = new File(outputPath + "记账凭证-" + fileName);
 			if (file.canWrite()) {
-				out = new FileOutputStream(outputPath + "����ƾ֤-" + fileName);  
+				out = new FileOutputStream(outputPath + "记账凭证-" + fileName);  
 				workbook.write(out);  
 			}
 		} catch (Exception e) {
