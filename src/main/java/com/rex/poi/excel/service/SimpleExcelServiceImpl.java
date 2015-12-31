@@ -164,7 +164,7 @@ public class SimpleExcelServiceImpl implements ExcelService {
 		List<ExcelModel> result = new ArrayList<ExcelModel>();
 //		List<Double> amountRange = initAmountRange(datas);
 		if (datas != null && !datas.isEmpty()) {
-			Map<MonthCode, List<Double>> dataMap = RandomUtil.getDataDescOrderPerMonth(datas);
+			Map<Integer, List<Double>> dataMap = RandomUtil.getDataDescOrderPerMonth(datas);
 			// TODO check if empty
 			int monthNum = dataMap.keySet().size();
 			int numPerMonth = DEFAULT_MAX_NUM / monthNum + 1;
@@ -172,6 +172,7 @@ public class SimpleExcelServiceImpl implements ExcelService {
 			int index = BEGIN_ROW;
 			boolean cheked = false;
 			Set<String> monthSet = new HashSet<String>();
+			Set<String> voucherSet = new HashSet<String>();
 			int time = 0;
 			while (DEFAULT_MAX_NUM > result.size() && time < 3) {
 				for (ExcelModel data : datas) {
@@ -180,10 +181,20 @@ public class SimpleExcelServiceImpl implements ExcelService {
 						break;
 					}
 					
+					if (data.getColumnA() == null || "".equals(data.getColumnA())) {
+						continue;
+					}
+					
 					int month = Integer.valueOf(data.getColumnA());
 					if (!checkIfValidData(dataMap.get(month), data, numPerMonth)) {
 						continue;
 					}
+					
+					if (voucherSet.contains(data.getColumnC() + "-" + data.getColumnD())) {
+						continue;
+					}
+					
+					voucherSet.add(data.getColumnC() + "-" + data.getColumnD());
 					
 					if (!result.contains(data)) {
 						index++;
@@ -201,6 +212,10 @@ public class SimpleExcelServiceImpl implements ExcelService {
 
 	private boolean checkIfValidData(List<Double> list, ExcelModel data,
 			int numPerMonth) {
+		if (list == null || list.isEmpty()) {
+			return false;
+		}
+		
 		if (data.getColumnA() == null || "".equals(data.getColumnA())
 				|| data.getColumnB() == null || "".equals(data.getColumnB())
 				|| data.getColumnE() == null || "".equals(data.getColumnE())) {
@@ -224,8 +239,16 @@ public class SimpleExcelServiceImpl implements ExcelService {
 		} else {
 			amount = Math.abs(Double.valueOf(data.getColumnF()));
 		}
-		if (!list.subList(0, numPerMonth).contains(amount)) {
+		
+		if (amount == 0.0) {
 			return false;
+		}
+		try {
+			if (!list.subList(0, numPerMonth).contains(amount)) {
+				return false;
+			}
+		} catch (Exception e) {
+			System.out.println(list.size());
 		}
 		return true;
 	}

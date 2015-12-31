@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.rex.poi.excel.core.SimpleExcelController;
 import com.rex.poi.excel.model.ExcelModel;
 import com.rex.poi.excel.model.MonthCode;
 
@@ -29,7 +30,12 @@ public class RandomUtil {
 	private static List<Double> novList;
 	private static List<Double> decList;
 	
-	private static Map<MonthCode, List<Double>> monthMaps;
+	private static Map<Integer, List<Double>> monthMaps;
+	
+	static {
+		initList();
+		initMonthMap();
+	}
 	
 	public static void initList() {
 		janList = new ArrayList<Double>();
@@ -47,39 +53,60 @@ public class RandomUtil {
 	}
 	
 	public static void initMonthMap() {
-		monthMaps = new HashMap<MonthCode, List<Double>>();
+		monthMaps = new HashMap<Integer, List<Double>>();
 	}
 	
-	public static Map<MonthCode, List<Double>> getDataDescOrderPerMonth(List<ExcelModel> datas) {
+	public static Map<Integer, List<Double>> getDataDescOrderPerMonth(List<ExcelModel> datas) {
 		for (ExcelModel model : datas) {
-			int month = getMonth(model.getColumnB());
+//			int month = getMonth(model.getColumnB());
+			if (model.getColumnA() == null || "".equals(model.getColumnA())) {
+				continue;
+			}
+			int month = Integer.valueOf(model.getColumnA()) - 1;
+			Double amount = 0.0;
+			if ((model.getColumnF() == null || "".equals(model.getColumnF()))
+					&& (model.getColumnG() == null || "".equals(model.getColumnG()))) {
+				continue;
+			}
+			
+			if (model.getColumnF() == null || "".equals(model.getColumnF())) {
+				amount = Math.abs(Double.valueOf(model.getColumnG()));
+			} else {
+				amount = Math.abs(Double.valueOf(model.getColumnF()));
+			}
+			
 			if (MonthCode.JAN.ordinal() == month) {
-				janList.add(DoubleUtil.getValue(model.getColumnD()));
+				janList.add(amount);
 			} else if (MonthCode.FEB.ordinal() == month) {
-				febList.add(DoubleUtil.getValue(model.getColumnD()));
+				febList.add(amount);
 			} else if (MonthCode.MAR.ordinal() == month) {
-				marList.add(DoubleUtil.getValue(model.getColumnD()));
+				marList.add(amount);
 			} else if (MonthCode.APR.ordinal() == month) {
-				aprList.add(DoubleUtil.getValue(model.getColumnD()));
+				aprList.add(amount);
 			} else if (MonthCode.MAY.ordinal() == month) {
-				mayList.add(DoubleUtil.getValue(model.getColumnD()));
+				try {
+					mayList.add(amount);
+				} catch (Exception e) {
+					System.out.println(amount);
+				}
 			} else if (MonthCode.JUN.ordinal() == month) {
-				junList.add(DoubleUtil.getValue(model.getColumnD()));
+				junList.add(amount);
 			} else if (MonthCode.JUL.ordinal() == month) {
-				julList.add(DoubleUtil.getValue(model.getColumnD()));
+				julList.add(amount);
 			} else if (MonthCode.AUG.ordinal() == month) {
-				augList.add(DoubleUtil.getValue(model.getColumnD()));
+				augList.add(amount);
 			} else if (MonthCode.SEP.ordinal() == month) {
-				sepList.add(DoubleUtil.getValue(model.getColumnD()));
+				sepList.add(amount);
 			} else if (MonthCode.OCT.ordinal() == month) {
-				octList.add(DoubleUtil.getValue(model.getColumnD()));
+				octList.add(amount);
 			} else if (MonthCode.NOV.ordinal() == month) {
-				novList.add(DoubleUtil.getValue(model.getColumnD()));
+				novList.add(amount);
 			} else if (MonthCode.DEC.ordinal() == month) {
 				try {
-					decList.add(DoubleUtil.getValue(model.getColumnD()));
+					decList.add(amount);
 				} catch (Exception e) {
-					System.out.println(model.getColumnD());
+					System.out.println(model.getColumnG());
+					System.out.println(model.getColumnF());
 				}
 			}
 		}
@@ -118,7 +145,7 @@ public class RandomUtil {
 
 	private static void addToMapIfNotEmpty(MonthCode code, List<Double> dataList) {
 		if (dataList != null && !dataList.isEmpty()) {
-			monthMaps.put(code, dataList);
+			monthMaps.put(code.ordinal() + 1, dataList);
 		}
 	}
 
@@ -133,7 +160,7 @@ public class RandomUtil {
 	}
 
 	public static void main(String[] args) throws Exception {
-		System.out.println(MonthCode.FEB.name().equals("FEB"));
+		new SimpleExcelController().main(null);
 		
 	}
 }
